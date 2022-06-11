@@ -6,6 +6,7 @@
 	</div>
 </template>
 
+
 <script>
 	//引入组件
 	import School from './components/School'
@@ -13,7 +14,7 @@
 
 	export default {
 		name:'App',
-		components:{
+		components:
 			School,
 			Student
 		}
