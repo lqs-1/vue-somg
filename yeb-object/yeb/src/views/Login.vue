@@ -26,7 +26,6 @@
 </template>
 
 <script>
-import router from '../router'
 export default {
   name: "Login",
   data(){
@@ -34,8 +33,8 @@ export default {
       loading: false,
       checked: true,
       loginForm:{
-        username: "admin",
-        password: "123",
+        username: "",
+        password: "",
         code: ''
       },
       captchaUrl: '',
@@ -53,6 +52,7 @@ export default {
   },
 
   methods:{
+    // 登录请求
     loginHandler(){
       this.$refs.form.validate((valid) => {
         if (valid){
@@ -60,12 +60,10 @@ export default {
           this.httpRequest.post('/user/login', this.loginForm)
               .then((response) => {
                 this.loading = false
-                router.replace("/main")
+                this.$router.replace("/index")
 
               }).catch((error) => {
-
-                console.log(error);
-
+                this.$router.replace("/");
               });
         }else{
           this.$router.replace("/")
@@ -74,8 +72,9 @@ export default {
     },
 
 
+    // 这里是填充验证码链接的
     updateCaptcha(){
-      this.captchaUrl = 'http://localhost:8081/user/captcha?username=' + this.loginForm.username + "&time=" + new Date()
+      this.captchaUrl = 'http://localhost:8081/user/captcha?time=' + new Date().getTime()
     },
 
 

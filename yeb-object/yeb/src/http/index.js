@@ -28,12 +28,14 @@ instance.interceptors.response.use(function (response) {
     // 表示请求是成功的
     if (response.status && response.status == 200){
         // 表示后台响应的状态也是成功状态
-        if (response.data.code == 0 || response.data.code >= 10000){
+        if (response.data.code == 0 || (response.data.code > 10000 && response.data.code < 20000)){
             Message.success(response.data.msg)
+            return response;
         }else(
             Message.error(response.data.msg)
         )
-        return response;
+        return ;
+
     }else{
         // 表示请求是失败的
         Message.error("请求失败")
@@ -43,7 +45,7 @@ instance.interceptors.response.use(function (response) {
 }, function (error) {
     // 对响应错误做些什么,服务器内部的错误才会触发比如，404,403,500等等
     Message.error("请求失败")
-    return Promise.reject(error)
+    return ;
 })
 
 export default instance

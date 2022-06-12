@@ -6,4 +6,7 @@
     <select id="selectByUserName" resultType="com.lqs.yebapi.domain.User">
         select * from user where `username`=#{username}
     </select>
+    <select id="getUserByUserName" resultType="com.lqs.yebapi.domain.User">
+        select * from user where `username`=#{username}
+    </select>
 </mapper>
