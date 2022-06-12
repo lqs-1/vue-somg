@@ -5,13 +5,13 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lqs.yebapi.constant.REnum;
-import com.lqs.yebapi.domain.Role;
 import com.lqs.yebapi.domain.User;
 import com.lqs.yebapi.mapper.UserMapper;
 import com.lqs.yebapi.service.RoleService;
 import com.lqs.yebapi.service.UserRoleService;
 import com.lqs.yebapi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 import utils.Pagination.PageUtils;
 import utils.Pagination.QueryPage;
@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService/*UserDetailsService */{
+public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService/*, UserDetailsService*/ {
 
     @Autowired
     private UserRoleService userRoleService;
@@ -78,9 +78,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 //    @Override
 //    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 //        List<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
+//        System.out.println(username);
 //        try {
 //            User user = this.baseMapper.getUserByUserName(username);
-//            System.out.println("haha");
 //            if (user != null){
 //                List<Long> roleIdList = userRoleService.selectByUserId(user.getId());
 //                for (Long roleId : roleIdList) {
