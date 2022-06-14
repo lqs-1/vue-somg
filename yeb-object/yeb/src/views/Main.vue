@@ -45,13 +45,14 @@ export default {
   name: "Main",
   data() {
     return {
-      user: {}
+      user: null
     }
   },
 
   created() {
     // this.$router.replace("/userList")
     this.checkLogin()
+    // console.log(this.user)
     // console.log("hah")
   },
 
@@ -64,7 +65,9 @@ export default {
       this.httpRequest.get("/user/session").then(response => {
         // console.log(this)
         this.$store.commit('STORAGE_USER', response.data.user)
+        console.log(response.data)
         this.user = response.data.user
+        // console.log(response)
         // console.log(this.user)
 
       }).catch(error => {

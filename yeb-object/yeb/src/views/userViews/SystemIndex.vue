@@ -1,5 +1,5 @@
 <template>
-<dev>还看,有啥好看的</dev>
+  <div>还看,有啥好看的</div>
 </template>
 
 <script>

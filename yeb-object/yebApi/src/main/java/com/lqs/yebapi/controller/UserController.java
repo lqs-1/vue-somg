@@ -68,7 +68,6 @@ public class UserController {
     @PostMapping("login")
     public R login(
             HttpServletRequest request,
-            HttpServletRequest httpServletRequest,
             @RequestBody UserLoginVo userLoginVo) throws Exception {
 
         // 从redis中取出验证码

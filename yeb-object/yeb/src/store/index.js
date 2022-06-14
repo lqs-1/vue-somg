@@ -11,19 +11,18 @@ const actions = {}
 const mutations = {
     // 在vuex中存储user
     STORAGE_USER(state, user){
-        sessionStorage.setItem(`user`, user)
-        state.user = user
+        localStorage.setItem(`user`, user)
         state.user = user
     },
     // 清除本地vuex中的user
     CLEAN_USER(state, user){
-        state.user =
-        sessionStorage.setItem("user", user)
+        localStorage.clear()
+        state.user = user
     }
 }
 //准备state对象——保存具体的数据
 const state = {
-    user: sessionStorage.getItem(`user`)
+    user: null
 }
 
 //创建并暴露store

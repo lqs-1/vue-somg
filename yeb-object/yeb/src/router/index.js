@@ -2,15 +2,15 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '../views/Login'
 import Main from '../views/Main'
-import UserList from "../views/userViews/UserList";
-import SystemIndex from "../views/userViews/SystemIndex";
+import UserList from "@/views/userViews/UserList";
+import SystemIndex from "@/views/userViews/SystemIndex";
 import { Message } from 'element-ui'
 
 // 自己定义的请求包。只能在组件中使用，如果非要在这里使用，必须引入
 
 Vue.use(VueRouter)
 
-import store from "../store/index";
+
 
 const routes = [
   {
@@ -51,7 +51,7 @@ const router = new VueRouter({
 router.beforeEach((to,from,next) =>{
 
   if (to.meta.isExist){
-    if (store.state.user == null){
+    if (!localStorage.getItem("user")){
       next()
     }else{
       next({
@@ -63,7 +63,7 @@ router.beforeEach((to,from,next) =>{
 
   if(to.meta.isLogin){ //判断当前路由是否需要进行权限控制
     // console.log(store.state.user)
-    if (store.state.user == null){
+    if (!localStorage.getItem("user")){
       Message.error("请先登录")
       next({
         path: '/index',

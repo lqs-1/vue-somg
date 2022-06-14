@@ -60,6 +60,9 @@ export default {
           this.httpRequest.post('/user/login', this.loginForm)
               .then((response) => {
                 this.loading = false
+                if (response.data.code > 20000 ){
+                  this.$router.replace("/")
+                }
                 this.$router.replace("/index")
 
               }).catch((error) => {
