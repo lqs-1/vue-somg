@@ -64,9 +64,16 @@ export default {
     checkLogin() {
       this.httpRequest.get("/user/session").then(response => {
         // console.log(this)
-        this.$store.commit('STORAGE_USER', response.data.user)
-        console.log(response.data)
-        this.user = response.data.user
+        if (response.data.code < 20000 ){
+          this.$store.commit('STORAGE_USER', response.data.user)
+          this.user = response.data.user
+
+        }else{
+          this.user = null
+        }
+
+
+        // console.log(response.data)
         // console.log(response)
         // console.log(this.user)
 
