@@ -60,8 +60,9 @@ export default {
       this.$refs.form.validate((valid) => {
         if (valid){
           this.loading = true
-          this.httpRequest.post('/user/login', this.loginForm)
+          this.httpRequest.post("/user/login?username=" + this.loginForm.username + "&password=" + this.loginForm.password + "&code=" + this.loginForm.code)
               .then((response) => {
+                console.log(response)
                 this.loading = false
                 if (response.data.code > 20000 ){
                   this.$router.replace("/")

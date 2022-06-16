@@ -8,7 +8,7 @@ import { Message } from 'element-ui'
 var instance =  axios.create({
     baseURL: 'http://localhost:8081/', // 添加基本地址
     timeout: 1000, // 所有请求在超时前等待1秒
-    headers: {'Authorization': 'hehe'}, // 添加请求头
+    // headers: {'Authorization': 'hehe'}, // 添加请求头
     withCredentials: true // 请求的时候携带cookie
 })
 

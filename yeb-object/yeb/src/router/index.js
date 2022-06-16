@@ -7,6 +7,7 @@ import SystemIndex from "@/views/userViews/SystemIndex";
 import { Message } from 'element-ui'
 import Register from "@/views/Register";
 import Reset from "@/views/Reset";
+import RoleList from "@/views/userViews/RoleList";
 
 // 自己定义的请求包。只能在组件中使用，如果非要在这里使用，必须引入
 
@@ -38,6 +39,14 @@ const routes = [
     name: 'main',
     component: Main,
     children: [
+      {
+        path: '/roleList',
+        name: 'roleList',
+        meta: {
+          isLogin: true
+        },
+        component: RoleList
+      },
       {
         path: '/userList',
         name: 'userList',

@@ -5,6 +5,6 @@
 
 
     <select id="selectByUserId" resultType="java.lang.Long">
-        select role_id from user_role where `user_id`=#{userId}
+        select roleId from user_role where `userId`=#{userId}
     </select>
 </mapper>

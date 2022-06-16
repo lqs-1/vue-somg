@@ -17,11 +17,13 @@ public interface UserService extends IService<User> {
 
     PageUtils getUserPage(Map<String, Object> params);
 
-    void addUser(User user);
+    R addUser(User user);
 
     void editUser(User user);
 
     void deleteUserById(Long id);
 
     R alterPwdByUserName(User user);
+
+    User selectUserByName(String username);
 }

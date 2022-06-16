@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lqs.yebapi.constant.REnum;
+import com.lqs.yebapi.domain.MyUser;
+import com.lqs.yebapi.domain.Role;
 import com.lqs.yebapi.domain.User;
 import com.lqs.yebapi.mapper.UserMapper;
 import com.lqs.yebapi.service.RoleService;
@@ -12,6 +14,11 @@ import com.lqs.yebapi.service.UserRoleService;
 import com.lqs.yebapi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import utils.Pagination.PageUtils;
@@ -24,12 +31,15 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService/*, UserDetailsService*/ {
+public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService, UserDetailsService {
 
     @Autowired
     private UserRoleService userRoleService;
     @Autowired
     private RoleService roleService;
+
+    @Autowired
+    BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public R getUser(User user, HttpServletRequest request) throws Exception {
@@ -61,8 +71,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public void addUser(User user) {
+    public R addUser(User user) {
+        User queryUser = this.baseMapper.getUserByUserName(user.getUsername());
+        if (queryUser != null){
+            return R.error(REnum.USER_DOES_EXIST.getStatusCode(), REnum.USER_DOES_EXIST.getStatusMsg());
+        }
+        String password = user.getPassword();
+        String encodePassword = passwordEncoder.encode(password);
+        user.setPassword(encodePassword);
         this.baseMapper.insert(user);
+        return R.ok(REnum.REGISTER_SUCCESS.getStatusCode(), REnum.REGISTER_SUCCESS.getStatusMsg());
     }
 
     @Override
@@ -88,26 +106,33 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 REnum.ALTER_PASSWORD_SUCCESS.getStatusMsg());
     }
 
+    @Override
+    public User selectUserByName(String username) {
+        User user = this.baseMapper.getUserByUserName(username);
+        return user;
+    }
+
     // 登录逻辑
-//    @Override
-//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        List<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
-//        System.out.println(username);
-//        try {
-//            User user = this.baseMapper.getUserByUserName(username);
-//            if (user != null){
-//                List<Long> roleIdList = userRoleService.selectByUserId(user.getId());
-//                for (Long roleId : roleIdList) {
-//                    Role role = roleService.getById(roleId);
-//                    System.out.println(role);
-//                    simpleGrantedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRolename()));
-//
-//                }
-//            }
-//            return new MyUser(username, user.getPassword(), simpleGrantedAuthorities);
-//        }catch (Exception e){
-//            e.printStackTrace();
-//            return new MyUser(username, "", simpleGrantedAuthorities);
-//        }
-//    }
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        List<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
+        System.out.println(username);
+        try {
+            User user = this.baseMapper.getUserByUserName(username);
+            if (user != null){
+                List<Long> roleIdList = userRoleService.selectByUserId(user.getId());
+                for (Long roleId : roleIdList) {
+                    Role role = roleService.getById(roleId);
+                    System.out.println(role);
+                    simpleGrantedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRoleName()));
+
+                }
+            }
+            System.out.println(user.getPassword());
+            return new MyUser(username, user.getPassword(), simpleGrantedAuthorities);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new MyUser(username, "", simpleGrantedAuthorities);
+        }
+    }
 }

@@ -23,4 +23,6 @@ mybatis-plus:
   global-config:
     db-config:
       id-type: auto
+  configuration:
+    map-underscore-to-camel-case: false # 数据库下划线自动转驼峰标示关闭
   mapper-locations: classpath:/com/lqs/yebapi/mapper/*.xml

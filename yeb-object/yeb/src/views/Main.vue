@@ -28,6 +28,7 @@
               <template slot="title"><i class="el-icon-location"></i>用户管理</template>
               <el-menu-item index="/index">系统首页</el-menu-item>
               <el-menu-item index="/userList">用户列表</el-menu-item>
+              <el-menu-item index="/roleList">角色列表</el-menu-item>
             </el-submenu>
           </el-menu>
         </el-aside>

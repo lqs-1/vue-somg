@@ -35,7 +35,7 @@
 
 
     <el-button type="success" class="queryButton" @click="queryByName">用户查询</el-button>
-    <el-input v-model="username" placeholder="请输入用户名"  class="queryUser"></el-input>
+    <el-input v-model="username" placeholder="请输入用户名" class="queryUser"></el-input>
     <el-divider></el-divider>
     <el-table
         :data="userList"
@@ -81,22 +81,26 @@
         <template slot-scope="scope">
           <el-button
               size="mini"
-              @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+              @click="handleEdit(scope.$index, scope.row)">编辑
+          </el-button>
           <el-button
               size="mini"
               type="danger"
-              @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+              @click="handleDelete(scope.$index, scope.row)">删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
-<!--  用户修改-->
+    <!--  用户修改-->
     <el-dialog
         title="用户修改"
         :visible="userEditVisible"
         width="30%"
         :before-close="editHandleClose">
 
-      <span>
+      <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+        <el-tab-pane label="基本信息" name="first">
+                <span>
           <el-form ref="editForm" :model="userForm" label-width="80px" :rules="rules">
             <el-form-item label="用户id" prop="id">
               <el-input v-model="userForm.id" :disabled="true"></el-input>
@@ -106,7 +110,8 @@
             </el-form-item>
 
             <el-form-item label="密码" prop="password">
-              <el-input type="password" v-model="userForm.password"></el-input>
+<!--              <el-input type="password" v-model="userForm.password"></el-input>-->
+              <el-input v-model="userForm.password" :disabled="true"></el-input>
             </el-form-item>
 
             <el-form-item label="性别" prop="sex">
@@ -117,6 +122,37 @@
             </el-form-item>
           </el-form>
       </span>
+
+        </el-tab-pane>
+        <el-tab-pane label="角色管理" name="second">
+          <el-table
+              ref="multipleTable"
+              :data="roleList"
+              tooltip-effect="dark"
+              style="width: 100%"
+              @selection-change="handleSelectionChange">
+            <el-table-column
+                type="selection"
+                width="55">
+            </el-table-column>
+            <el-table-column
+                label="角色id"
+                width="120">
+              <template slot-scope="scope">{{ scope.row.id }}</template>
+            </el-table-column>
+            <el-table-column
+                prop="roleName"
+                label="角色名称"
+                width="120">
+            </el-table-column>
+          </el-table>
+          <div style="margin-top: 20px">
+            <el-button @click="toggleSelection()">取消选择</el-button>
+          </div>
+        </el-tab-pane>
+      </el-tabs>
+
+
 
       <span slot="footer" class="dialog-footer">
     <el-button @click="userEditVisible = false">取 消</el-button>
@@ -137,22 +173,22 @@
 <script>
 export default {
   name: "UserList",
-  data(){
-    return{
+  data() {
+    return {
       userList: [],
       userAddVisible: false,
       userEditVisible: false,
-      username:"",
-      userForm:{
-        id:"",
+      username: "",
+      userForm: {
+        id: "",
         username: "",
         password: "",
         sex: ""
       },
-      rules:{
-        username: [{required: true, message: '请输入用户名', trigger:"blur"}],
-        password: [{required: true, message: '请输入密码', trigger:"blur"}],
-        sex: [{required: true, message: '请选择性别', trigger:"blur"}]
+      rules: {
+        username: [{required: true, message: '请输入用户名', trigger: "blur"}],
+        password: [{required: true, message: '请输入密码', trigger: "blur"}],
+        sex: [{required: true, message: '请选择性别', trigger: "blur"}]
       },
       pagination: {
         // 每页多找个
@@ -162,10 +198,13 @@ export default {
         // 获取页码
         activePage: 4,
         // 总条数
-        total:20,
+        total: 20,
         // 当前页
         currentPage: 1,
-      }
+      },
+      activeName: 'first',
+      multipleSelection: [],
+      roleList: []
     }
   },
 
@@ -175,7 +214,7 @@ export default {
     this.changeCurrentPageHandler(this.pagination.currentPage)
   },
 
-  methods:{
+  methods: {
     // getUserList(){
     //   this.httpRequest.get("user/userList")
     //       .then(response => {
@@ -184,7 +223,7 @@ export default {
     //       })
     // },
 
-    changeCurrentPageHandler(currentPage){
+    changeCurrentPageHandler(currentPage) {
       this.httpRequest.get("user/userPage?page=" + currentPage +
           "&limit=" + this.pagination.pageSize +
           "&username=" + this.username +
@@ -199,91 +238,118 @@ export default {
           })
     },
 
-    queryByName(){
+    queryByName() {
       this.changeCurrentPageHandler(1)
     },
 
-    addHandleClose(){
+    addHandleClose() {
       this.userAddVisible = false
     },
 
-    showUserAddForm(){
+    showUserAddForm() {
       this.userForm = {}
       this.userAddVisible = true
     },
 
 
-    addUser(){
-      this.$refs.addForm.validate((valid) =>{
-        if (valid){
+    addUser() {
+      this.$refs.addForm.validate((valid) => {
+        if (valid) {
           // console.log(this.userForm)
-          this.httpRequest.post("user/addUser", this.userForm).then(response =>{
+          this.httpRequest.post("user/addUser", this.userForm).then(response => {
             this.changeCurrentPageHandler(1)
             this.userForm = {}
             this.userAddVisible = false
           })
-        }else{
+        } else {
           message.error("请完善数据")
         }
       })
     },
 
 
-    handleEdit(index, data){
+    handleEdit(index, data) {
       console.log(data)
       this.userForm = data
       this.userEditVisible = true
 
     },
 
-    editHandleClose(){
+    editHandleClose() {
       this.userEditVisible = false
     },
 
-    editUser(){
-      this.$refs.editForm.validate((valid) =>{
-        if (valid){
+    editUser() {
+      this.$refs.editForm.validate((valid) => {
+        if (valid) {
           // console.log(this.userForm)
-          this.httpRequest.post("user/editUser", this.userForm).then(response =>{
+          this.httpRequest.post("user/editUser", this.userForm).then(response => {
             this.changeCurrentPageHandler(1)
             this.userForm = {}
             this.userEditVisible = false
           })
-        }else{
+        } else {
           message.error("请完善数据")
         }
       })
     },
 
 
-    handleDelete(index, data){
-      this.httpRequest.post("user/deleteUser", {"id":data.id}).then(response =>{
+    handleDelete(index, data) {
+      this.httpRequest.post("user/deleteUser", {"id": data.id}).then(response => {
         this.changeCurrentPageHandler(1)
       })
-    }
+    },
+
+    handleClick(tab, event) {
+      if (tab.index == 1) {
+        this.httpRequest.get("role/roleList")
+            .then(response => {
+              console.log(response)
+              this.roleList = response.data.roleList
+
+            })
+      }
+    },
+
+    handleSelectionChange(val) {
+      console.log(val)
+      this.multipleSelection = val;
+      console.log(this.multipleSelection)
+    },
+
+    toggleSelection(rows) {
+      console.log(rows)
+      if (rows) {
+        rows.forEach(row => {
+          this.$refs.multipleTable.toggleRowSelection(row);
+        });
+      } else {
+        this.$refs.multipleTable.clearSelection();
+      }
+    },
 
   }
-
-
 
 
 }
 </script>
 
 <style scoped>
-  .addUser{
-    margin-left: 20px;
-  }
-  .queryUser {
-    width: 15%;
-    position: absolute;
-    right: 50px;
-  }
-  .queryButton{
-    position: absolute;
-    right: 400px;
-  }
+.addUser {
+  margin-left: 20px;
+}
 
+.queryUser {
+  width: 15%;
+  position: absolute;
+  right: 50px;
+}
+
+.queryButton {
+  position: absolute;
+  right: 400px;
+}
 
 
 </style>

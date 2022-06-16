@@ -9,6 +9,7 @@ import com.wf.captcha.base.Captcha;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import redis.clients.jedis.JedisPool;
 import utils.Pagination.PageUtils;
@@ -116,6 +117,7 @@ public class UserController {
     }
 
 
+    @PreAuthorize("hasAnyRole('admin', 'teacher')")
     @GetMapping("userList")
     public R getUserList(){
         try{
@@ -132,7 +134,7 @@ public class UserController {
     }
 
 
-//    @PreAuthorize("hasAnyRole('admin')")
+    @PreAuthorize("hasAnyRole('admin')")
     @GetMapping("userPage")
     public R getUserPage(@RequestParam Map<String, Object> params){
         try{
@@ -152,12 +154,12 @@ public class UserController {
     }
 
 
+    @PreAuthorize("hasAnyRole('admin')")
     @PostMapping("addUser")
     public R addUser(@RequestBody User user){
         try{
-            userService.addUser(user);
-            return R.ok(REnum.ADD_USER_SUCCESS.getStatusCode(),
-                    REnum.ADD_USER_SUCCESS.getStatusMsg());
+            R result = userService.addUser(user);
+            return result;
 
         }catch (Exception e){
             e.printStackTrace();
@@ -166,6 +168,7 @@ public class UserController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('admin')")
     @PostMapping("editUser")
     public R editUser(@RequestBody User user){
         try{
@@ -181,6 +184,7 @@ public class UserController {
     }
 
 
+    @PreAuthorize("hasAnyRole('admin')")
     @PostMapping("deleteUser")
     public R deleteUser(@RequestBody User user){
         try{
@@ -201,8 +205,8 @@ public class UserController {
     @PostMapping("register")
     public R userRegister(@RequestBody User user){
         try{
-            userService.addUser(user);
-            return R.ok(REnum.REGISTER_SUCCESS.getStatusCode(), REnum.REGISTER_SUCCESS.getStatusMsg());
+            R result = userService.addUser(user);
+            return result;
         }catch (Exception e){
             e.printStackTrace();
             return R.error(REnum.REGISTER_FAIL.getStatusCode(), REnum.REGISTER_FAIL.getStatusMsg());
