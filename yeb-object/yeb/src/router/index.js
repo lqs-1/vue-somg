@@ -5,6 +5,8 @@ import Main from '../views/Main'
 import UserList from "@/views/userViews/UserList";
 import SystemIndex from "@/views/userViews/SystemIndex";
 import { Message } from 'element-ui'
+import Register from "@/views/Register";
+import Reset from "@/views/Reset";
 
 // 自己定义的请求包。只能在组件中使用，如果非要在这里使用，必须引入
 
@@ -20,6 +22,16 @@ const routes = [
       isExist:true
     },
     component: Login
+  },
+  {
+    path: "/register",
+    name: "register",
+    component: Register
+  },
+  {
+    path: "/reset",
+    name: "reset",
+    component: Reset
   },
   {
     path: '/main',

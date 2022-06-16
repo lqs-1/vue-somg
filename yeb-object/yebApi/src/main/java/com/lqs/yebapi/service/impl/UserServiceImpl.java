@@ -13,6 +13,7 @@ import com.lqs.yebapi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import utils.Pagination.PageUtils;
 import utils.Pagination.QueryPage;
 import utils.R;
@@ -72,6 +73,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public void deleteUserById(Long id) {
         this.baseMapper.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public R alterPwdByUserName(User user) {
+        User userByUserName = this.baseMapper.getUserByUserName(user.getUsername());
+        if(userByUserName == null){
+            return R.error(REnum.USER_DOES_NOT_EXIST.getStatusCode(),
+                    REnum.USER_DOES_NOT_EXIST.getStatusMsg());
+        }
+        this.baseMapper.alterPwdByUserName(user);
+        return R.ok(REnum.ALTER_PASSWORD_SUCCESS.getStatusCode(),
+                REnum.ALTER_PASSWORD_SUCCESS.getStatusMsg());
     }
 
     // 登录逻辑

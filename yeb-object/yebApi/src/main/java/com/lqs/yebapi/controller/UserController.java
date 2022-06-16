@@ -60,7 +60,6 @@ public class UserController {
     /**
      * 方法作废用spring-security
      * @param request
-     * @param httpServletRequest
      * @param userLoginVo
      * @return
      * @throws Exception
@@ -194,6 +193,34 @@ public class UserController {
             return R.error(REnum.DELETE_USER_FAIL.getStatusCode(),
                     REnum.DELETE_USER_FAIL.getStatusMsg());
         }
+    }
+
+
+
+
+    @PostMapping("register")
+    public R userRegister(@RequestBody User user){
+        try{
+            userService.addUser(user);
+            return R.ok(REnum.REGISTER_SUCCESS.getStatusCode(), REnum.REGISTER_SUCCESS.getStatusMsg());
+        }catch (Exception e){
+            e.printStackTrace();
+            return R.error(REnum.REGISTER_FAIL.getStatusCode(), REnum.REGISTER_FAIL.getStatusMsg());
+        }
+    }
+
+
+    @PostMapping("alterPwd")
+    public R userAlterPwd(@RequestBody User user){
+
+        try {
+            R result = userService.alterPwdByUserName(user);
+            return result;
+        }catch (Exception e){
+            e.printStackTrace();
+            return R.error(REnum.ALTER_PASSWORD_FAIL.getStatusCode(), REnum.ALTER_PASSWORD_FAIL.getStatusMsg());
+        }
+
     }
 
 

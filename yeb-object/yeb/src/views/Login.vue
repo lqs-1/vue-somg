@@ -19,8 +19,11 @@
         <el-input type="text" v-model="loginForm.code" placeholder="点击图片更换验证码" style="width: 230px"/>
         <img :src="captchaUrl" @click="updateCaptcha">
       </el-form-item>
-      <el-checkbox v-model="checked" class="remember">记住我</el-checkbox>
       <el-button type="primary" style="width: 100%" @click="loginHandler">登录</el-button>
+      <hr>
+      <el-button type="primary" style="width: 100%" @click="toRegister">去注册</el-button>
+      <hr>
+      <el-button type="primary" style="width: 100%" @click="toReset">找回密码</el-button>
     </el-form>
   </div>
 </template>
@@ -31,7 +34,6 @@ export default {
   data(){
     return{
       loading: false,
-      checked: true,
       loginForm:{
         username: "",
         password: "",
@@ -48,6 +50,7 @@ export default {
   },
 
   created() {
+    window.document.title = "login"
     this.updateCaptcha()
   },
 
@@ -79,6 +82,14 @@ export default {
     updateCaptcha(){
       this.captchaUrl = 'http://localhost:8081/user/captcha?time=' + new Date().getTime()
     },
+
+    toRegister(){
+      this.$router.replace("/register")
+    },
+
+    toReset(){
+      this.$router.replace("/reset")
+    }
 
 
 

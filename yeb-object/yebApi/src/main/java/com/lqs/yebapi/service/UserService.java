@@ -22,4 +22,6 @@ public interface UserService extends IService<User> {
     void editUser(User user);
 
     void deleteUserById(Long id);
+
+    R alterPwdByUserName(User user);
 }

@@ -170,6 +170,7 @@ export default {
   },
 
   created() {
+    window.document.title = "userList"
     // this.getUserList()
     this.changeCurrentPageHandler(this.pagination.currentPage)
   },

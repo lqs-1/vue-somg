@@ -4,7 +4,12 @@
 
 <script>
 export default {
-  name: "SystemIndex"
+  name: "SystemIndex",
+
+  created() {
+    window.document.title = "index"
+  }
+
 }
 </script>
 

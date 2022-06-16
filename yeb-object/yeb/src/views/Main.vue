@@ -50,6 +50,7 @@ export default {
   },
 
   created() {
+    window.document.title = "main"
     // this.$router.replace("/userList")
     this.checkLogin()
     // console.log(this.user)

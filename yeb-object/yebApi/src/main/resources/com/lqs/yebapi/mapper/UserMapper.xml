@@ -9,4 +9,8 @@
     <select id="getUserByUserName" resultType="com.lqs.yebapi.domain.User">
         select * from user where `username`=#{username}
     </select>
+
+    <update id="alterPwdByUserName" parameterType="com.lqs.yebapi.domain.User">
+        update user set `password`=#{password} where `username`=#{username}
+    </update>
 </mapper>
