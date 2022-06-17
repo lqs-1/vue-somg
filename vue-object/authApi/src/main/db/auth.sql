@@ -11,11 +11,29 @@
  Target Server Version : 80029
  File Encoding         : 65001
 
- Date: 17/06/2022 08:16:07
+ Date: 17/06/2022 22:35:41
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for permission
+-- ----------------------------
+DROP TABLE IF EXISTS `permission`;
+CREATE TABLE `permission`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `permissionName` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of permission
+-- ----------------------------
+INSERT INTO `permission` VALUES (1, 'select');
+INSERT INTO `permission` VALUES (3, 'delete');
+INSERT INTO `permission` VALUES (4, 'add');
+INSERT INTO `permission` VALUES (6, 'alter');
 
 -- ----------------------------
 -- Table structure for role
@@ -25,7 +43,7 @@ CREATE TABLE `role`  (
   `id` int NOT NULL AUTO_INCREMENT,
   `roleName` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of role
@@ -62,6 +80,25 @@ INSERT INTO `user` VALUES (11, 'l8', '$2a$10$HNzBQm.Xxoc8Fb5TWpqfv.c8wxFV.lUbOFk
 INSERT INTO `user` VALUES (12, 'l9', '$2a$10$kwmtKTd4YWjNuCqu/TeeEuDjlzsbsaYUuQMOWSiT3ol41wyloZ9ey', '男');
 
 -- ----------------------------
+-- Table structure for user_permission
+-- ----------------------------
+DROP TABLE IF EXISTS `user_permission`;
+CREATE TABLE `user_permission`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `userId` int NOT NULL,
+  `permissionId` int NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of user_permission
+-- ----------------------------
+INSERT INTO `user_permission` VALUES (2, 12, 1);
+INSERT INTO `user_permission` VALUES (3, 12, 2);
+INSERT INTO `user_permission` VALUES (4, 1, 1);
+INSERT INTO `user_permission` VALUES (5, 1, 3);
+
+-- ----------------------------
 -- Table structure for user_role
 -- ----------------------------
 DROP TABLE IF EXISTS `user_role`;
@@ -70,13 +107,11 @@ CREATE TABLE `user_role`  (
   `userId` int NOT NULL,
   `roleId` int NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user_role
 -- ----------------------------
-INSERT INTO `user_role` VALUES (1, 1, 1);
-INSERT INTO `user_role` VALUES (2, 1, 2);
 INSERT INTO `user_role` VALUES (4, 3, 1);
 INSERT INTO `user_role` VALUES (5, 4, 1);
 INSERT INTO `user_role` VALUES (6, 5, 1);
@@ -86,6 +121,8 @@ INSERT INTO `user_role` VALUES (9, 8, 1);
 INSERT INTO `user_role` VALUES (10, 9, 1);
 INSERT INTO `user_role` VALUES (11, 10, 1);
 INSERT INTO `user_role` VALUES (12, 11, 1);
-INSERT INTO `user_role` VALUES (13, 12, 1);
+INSERT INTO `user_role` VALUES (14, 12, 1);
+INSERT INTO `user_role` VALUES (15, 1, 1);
+INSERT INTO `user_role` VALUES (16, 1, 2);
 
 SET FOREIGN_KEY_CHECKS = 1;
