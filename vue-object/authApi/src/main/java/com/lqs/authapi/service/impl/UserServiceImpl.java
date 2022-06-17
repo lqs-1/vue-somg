@@ -4,14 +4,13 @@ package com.lqs.authapi.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.lqs.authapi.service.RoleService;
-import com.lqs.authapi.service.UserRoleService;
+import com.lqs.authapi.domain.Permission;
+import com.lqs.authapi.service.*;
 import com.lqs.authapi.constant.REnum;
 import com.lqs.authapi.domain.MyUser;
 import com.lqs.authapi.domain.Role;
 import com.lqs.authapi.domain.User;
 import com.lqs.authapi.mapper.UserMapper;
-import com.lqs.authapi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -39,6 +38,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private RoleService roleService;
     @Autowired
     BCryptPasswordEncoder passwordEncoder;
+    @Autowired
+    private PermissionService permissionService;
+    @Autowired
+    private UserPermissionService userPermissionService;
 
     @Override
     public R getUser(User user, HttpServletRequest request) throws Exception {
@@ -175,6 +178,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                     simpleGrantedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRoleName()));
 
                 }
+
+                List<Long> permissionIdList = userPermissionService.selectByUserId(user.getId());
+
+                for (Long permissionId : permissionIdList) {
+
+                    Permission permission = permissionService.getById(permissionId);
+
+                    simpleGrantedAuthorities.add(new SimpleGrantedAuthority(permission.getPermissionName()));
+
+                }
+
+
             }
 
             return new MyUser(username, user.getPassword(), simpleGrantedAuthorities);

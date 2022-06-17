@@ -148,6 +148,30 @@
             </table>
           </div>
         </el-tab-pane>
+
+
+        <el-tab-pane label="权限管理" name="third">
+          <div class="checkScrol">
+            <table class="datatable">
+              <thead>
+              <tr>
+                <th>选择</th>
+                <th>权限id</th>
+                <th>权限名</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr v-for="c in permissionList">
+                <td>
+                  <input :id="c.id" v-model="permissionIds" type="checkbox" :value="c.id">
+                </td>
+                <td><label :for="c.id">{{c.id}}</label></td>
+                <td><label :for="c.id">{{c.permissionName}}</label></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </el-tab-pane>
       </el-tabs>
 
 
@@ -202,7 +226,9 @@ export default {
       },
       activeName: 'first',
       roleIds: [],
-      roleList: []
+      roleList: [],
+      permissionList: [],
+      permissionIds: [],
     }
   },
 
@@ -282,6 +308,19 @@ export default {
             this.roleIds = response.data.roleIds
           })
 
+      this.httpRequest.get("permission/permissionList")
+          .then(response => {
+            // console.log(response)
+            this.permissionList = response.data.permissionList
+          })
+      // console.log(this.userForm)
+      this.httpRequest.get("user/permissionList?id=" + this.userForm.id)
+          .then(response => {
+            // console.log(response)
+            this.permissionIds = response.data.permissionIds
+          })
+
+
     },
 
     editHandleClose() {
@@ -300,7 +339,8 @@ export default {
               "username": this.userForm.username,
               "password": this.userForm.password,
               "sex": this.userForm.sex,
-              "roleIds": this.roleIds
+              "roleIds": this.roleIds,
+              "permissionIds": this.permissionIds
           }
 
           this.httpRequest.post("user/editUser", params).then(response => {

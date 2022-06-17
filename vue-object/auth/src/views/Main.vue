@@ -7,9 +7,12 @@
           <div class="user_info">
             <!--            <img :src="user.topic" class="user_topic">-->
               <el-dropdown v-if="user != null" @command="userCommandHandler">
-                 <span class="el-dropdown-link">
+                <div>
+                  <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+                  <span class="el-dropdown-link">
                     {{ user.username }}<i class="el-icon-arrow-down el-icon--right"></i>
-                </span>
+                   </span>
+                </div>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item command="cleanSession">注销登录</el-dropdown-item>
                 </el-dropdown-menu>
@@ -29,6 +32,7 @@
               <el-menu-item index="/index">系统首页</el-menu-item>
               <el-menu-item index="/userList">用户列表</el-menu-item>
               <el-menu-item index="/roleList">角色列表</el-menu-item>
+              <el-menu-item index="/permissionList">权限列表</el-menu-item>
             </el-submenu>
           </el-menu>
         </el-aside>

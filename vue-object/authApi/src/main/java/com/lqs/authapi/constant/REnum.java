@@ -46,6 +46,19 @@ public enum REnum {
     ROLE_EDIT_FAIL(21017, "角色修改失败"),
     ROLE_DELETE_SUCCESS(11012, "角色删除成功"),
     ROLE_DELETE_FAIL(21018, "角色删除失败"),
+    GET_PERMISSION_SUCCESS(11013, "获取权限列表成功"),
+    GET_PERMISSION_FAIL(21019, "获取权限列表失败"),
+    PERMISSION_ADD_SUCCESS(11014, "添加权限成功"),
+    PERMISSION_ADD_FAIL(21020, "添加权限失败"),
+    PERMISSION_DOES_EXIST(21021, "权限已经存在"),
+    PERMISSION_EDIT_SUCCESS(11015, "权限修改成功"),
+    PERMISSION_EDIT_FAIL(21022, "权限修改失败"),
+    PERMISSION_DELETE_SUCCESS(11016, "删除权限成功"),
+    PERMISSION_DELETE_FAIL(21023, "删除权限失败"),
+    GET_EXIST_ROLE_SUCCESS(11017, "获取已拥有角色列表成功"),
+    GET_EXIST_ROLE_FAIL(21024, "获取已拥有角色列表失败"),
+    GET_EXIST_PERMISSION_SUCCESS(11018, "获取已拥有权限列表成功"),
+    GET_EXIST_PERMISSION_FAIL(21025, "获取已拥有权限列表失败"),
 
     ;
 

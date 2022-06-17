@@ -19,7 +19,7 @@ import java.util.Map;
 public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements RoleService {
 
     @Override
-    public PageUtils getUserPage(Map<String, Object> param) {
+    public PageUtils getRolePage(Map<String, Object> param) {
 
         IPage<Role> page = this.page(new QueryPage<Role>().getPage(param, true),
                 new LambdaQueryWrapper<Role>().like(Role::getRoleName,
@@ -34,13 +34,15 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
 
         if (queryRole != null){
 
-            return R.error(REnum.ROLE_DOES_EXIST.getStatusCode(), REnum.ROLE_DOES_EXIST.getStatusMsg());
+            return R.error(REnum.ROLE_DOES_EXIST.getStatusCode(),
+                    REnum.ROLE_DOES_EXIST.getStatusMsg());
 
         }
 
         this.baseMapper.insert(role);
 
-        return R.ok(REnum.ROLE_ADD_SUCCESS.getStatusCode(), REnum.ROLE_ADD_SUCCESS.getStatusMsg());
+        return R.ok(REnum.ROLE_ADD_SUCCESS.getStatusCode(),
+                REnum.ROLE_ADD_SUCCESS.getStatusMsg());
 
     }
 
@@ -52,7 +54,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
     }
 
     @Override
-    public void deleteUserById(Long id) {
+    public void deleteRoleById(Long id) {
 
         this.baseMapper.deleteById(id);
 

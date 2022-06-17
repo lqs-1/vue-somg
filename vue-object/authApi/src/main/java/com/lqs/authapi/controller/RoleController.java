@@ -26,7 +26,7 @@ public class RoleController {
 
         try{
 
-            PageUtils roleList = roleService.getUserPage(param);
+            PageUtils roleList = roleService.getRolePage(param);
 
             return R.ok(REnum.GET_ROLE_SUCCESS.getStatusCode(),
                             REnum.GET_ROLE_SUCCESS.getStatusMsg())
@@ -116,7 +116,7 @@ public class RoleController {
 
         try{
 
-            roleService.deleteUserById(role.getId());
+            roleService.deleteRoleById(role.getId());
 
             return R.ok(REnum.ROLE_DELETE_SUCCESS.getStatusCode(),
                     REnum.ROLE_DELETE_SUCCESS.getStatusMsg());

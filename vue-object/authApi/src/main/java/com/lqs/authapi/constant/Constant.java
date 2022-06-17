@@ -13,4 +13,7 @@ public class Constant {
 
     // 默认添加的角色
     public static final String COMMON_ROLE = "common";
+
+    // 默认添加的权限
+    public static final String COMMON_PERMISSION = "select";
 }

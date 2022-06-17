@@ -8,6 +8,7 @@ import { Message } from 'element-ui'
 import Register from "@/views/Register";
 import Reset from "@/views/Reset";
 import RoleList from "@/views/userViews/RoleList";
+import PermissionList from "@/views/userViews/PermissionList";
 
 // 自己定义的请求包。只能在组件中使用，如果非要在这里使用，必须引入
 
@@ -39,6 +40,14 @@ const routes = [
     name: 'main',
     component: Main,
     children: [
+      {
+        path: '/permissionList',
+        name: 'permissionList',
+        meta: {
+          isLogin: true
+        },
+        component: PermissionList
+      },
       {
         path: '/roleList',
         name: 'roleList',

@@ -2,33 +2,33 @@
   <div class="user_list">
     <el-button type="primary" icon="el-icon-circle-plus" circle class="addRole" @click="showRoleAddForm"></el-button>
     <el-dialog
-        title="添加角色"
-        :visible="roleAddVisible"
+        title="添加权限"
+        :visible="permissionAddVisible"
         width="30%"
         :before-close="addHandleClose">
       <span>
-          <el-form ref="addForm" :model="roleForm" label-width="80px" :rules="rules">
-            <el-form-item label="角色名" prop="roleName">
-              <el-input type="text" v-model="roleForm.roleName"></el-input>
+          <el-form ref="addForm" :model="permissionForm" label-width="80px" :rules="rules">
+            <el-form-item label="权限名" prop="permissionName">
+              <el-input type="text" v-model="permissionForm.permissionName"></el-input>
             </el-form-item>
           </el-form>
       </span>
       <span slot="footer" class="dialog-footer">
-    <el-button @click="roleAddVisible = false">取 消</el-button>
-    <el-button type="primary" @click="addRole">添加</el-button>
+    <el-button @click="permissionAddVisible = false">取 消</el-button>
+    <el-button type="primary" @click="addPermission">添加</el-button>
   </span>
     </el-dialog>
 
 
-    <el-button type="success" class="queryButton" @click="queryByName">角色查询</el-button>
-    <el-input v-model="rolename" placeholder="请输入角色名" class="queryUser"></el-input>
+    <el-button type="success" class="queryButton" @click="queryByName">权限查询</el-button>
+    <el-input v-model="permissionname" placeholder="请输入权限名" class="queryUser"></el-input>
 
 
     <el-table
-        :data="roleList"
+        :data="permissionList"
         style="width: 100%">
       <el-table-column
-          label="角色编号"
+          label="权限编号"
           width="250"
           align="center">
         <template slot-scope="scope">
@@ -36,11 +36,11 @@
         </template>
       </el-table-column>
       <el-table-column
-          label="角色名称"
+          label="权限名称"
           width="300"
           align="center">
         <template slot-scope="scope">
-          <span style="margin-left: 10px">{{ scope.row.roleName }}</span>
+          <span style="margin-left: 10px">{{ scope.row.permissionName }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -62,24 +62,24 @@
     </el-table>
     <!--  用户修改-->
     <el-dialog
-        title="角色修改"
-        :visible="roleEditVisible"
+        title="权限修改"
+        :visible="permissionEditVisible"
         width="30%"
         :before-close="editHandleClose">
 
       <span>
-          <el-form ref="editForm" :model="roleForm" label-width="80px" :rules="rules">
-            <el-form-item label="角色id" prop="id">
-              <el-input v-model="roleForm.id" :disabled="true"></el-input>
+          <el-form ref="editForm" :model="permissionForm" label-width="80px" :rules="rules">
+            <el-form-item label="权限id" prop="id">
+              <el-input v-model="permissionForm.id" :disabled="true"></el-input>
             </el-form-item>
-            <el-form-item label="角色名" prop="roleName">
-              <el-input type="text" v-model="roleForm.roleName"></el-input>
+            <el-form-item label="权限名" prop="roleName">
+              <el-input type="text" v-model="permissionForm.permissionName"></el-input>
             </el-form-item>
           </el-form>
       </span>
 
       <span slot="footer" class="dialog-footer">
-    <el-button @click="roleEditVisible = false">取 消</el-button>
+    <el-button @click="permissionEditVisible = false">取 消</el-button>
     <el-button type="primary" @click="editRole">修改</el-button>
       </span>
     </el-dialog>
@@ -96,19 +96,19 @@
 
 <script>
 export default {
-  name: "RoleList",
+  name: "PermissionList",
   data() {
     return {
-      roleList: [],
-      roleAddVisible: false,
-      roleEditVisible: false,
-      rolename: "",
-      roleForm: {
+      permissionList: [],
+      permissionAddVisible: false,
+      permissionEditVisible: false,
+      permissionname: "",
+      permissionForm: {
         id: "",
-        roleName: ""
+        permissionName: ""
       },
       rules: {
-        roleName: [{required: true, message: '请输入角色', trigger: "blur"}],
+        permissionName: [{required: true, message: '请输入权限名', trigger: "blur"}],
       },
       pagination: {
         // 每页多找个
@@ -126,7 +126,7 @@ export default {
   },
 
   created() {
-    window.document.title = "roleList"
+    window.document.title = "permissionList"
     // this.getUserList()
     this.changeCurrentPageHandler(this.pagination.currentPage)
   },
@@ -141,18 +141,18 @@ export default {
     // },
 
     changeCurrentPageHandler(currentPage) {
-      this.httpRequest.get("role/rolePage?page=" + currentPage +
+      this.httpRequest.get("permission/permissionPage?page=" + currentPage +
           "&limit=" + this.pagination.pageSize +
-          "&rolename=" + this.rolename +
+          "&permissionname=" + this.permissionname +
           "&orderFiled=id" +
           "&orderType=1")
           .then(response => {
             // console.log(response)
-            this.pagination.currentPage = response.data.roleList.currentPage
-            this.pagination.pageSize = response.data.roleList.pageSize
-            this.pagination.total = response.data.roleList.totalSize
-            this.pagination.totalPage = response.data.roleList.totalPage
-            this.roleList = response.data.roleList.resultList
+            this.pagination.currentPage = response.data.permissionList.currentPage
+            this.pagination.pageSize = response.data.permissionList.pageSize
+            this.pagination.total = response.data.permissionList.totalSize
+            this.pagination.totalPage = response.data.permissionList.totalPage
+            this.permissionList = response.data.permissionList.resultList
           })
     },
 
@@ -161,23 +161,23 @@ export default {
     },
 
     addHandleClose() {
-      this.roleAddVisible = false
+      this.permissionAddVisible = false
     },
 
     showRoleAddForm() {
-      this.roleForm = {}
-      this.roleAddVisible = true
+      this.permissionForm = {}
+      this.permissionAddVisible = true
     },
 
 
-    addRole() {
+    addPermission() {
       this.$refs.addForm.validate((valid) => {
         if (valid) {
           // console.log(this.userForm)
-          this.httpRequest.post("role/addRole", this.roleForm).then(response => {
+          this.httpRequest.post("permission/addPermission", this.permissionForm).then(response => {
             this.changeCurrentPageHandler(1)
-            this.roleForm = {}
-            this.roleAddVisible = false
+            this.permissionForm = {}
+            this.permissionAddVisible = false
           })
         } else {
           message.error("请完善数据")
@@ -188,23 +188,23 @@ export default {
 
     handleEdit(index, data) {
       // console.log(data)
-      this.roleForm = data
-      this.roleEditVisible = true
+      this.permissionForm = data
+      this.permissionEditVisible = true
 
     },
 
     editHandleClose() {
-      this.roleEditVisible = false
+      this.permissionEditVisible = false
     },
 
     editRole() {
       this.$refs.editForm.validate((valid) => {
         if (valid) {
           // console.log(this.userForm)
-          this.httpRequest.post("role/editRole", this.roleForm).then(response => {
+          this.httpRequest.post("permission/editPermission", this.permissionForm).then(response => {
             this.changeCurrentPageHandler(1)
-            this.roleForm = {}
-            this.roleEditVisible = false
+            this.permissionForm = {}
+            this.permissionEditVisible = false
           })
         } else {
           message.error("请完善数据")
@@ -214,7 +214,7 @@ export default {
 
 
     handleDelete(index, data) {
-      this.httpRequest.post("role/deleteRole", {"id": data.id}).then(response => {
+      this.httpRequest.post("permission/deletePermission", {"id": data.id}).then(response => {
         this.changeCurrentPageHandler(1)
       })
     }

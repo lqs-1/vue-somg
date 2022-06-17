@@ -9,4 +9,6 @@ import java.util.List;
 public class UserVo extends User {
 
     private List<Long> roleIds;
+
+    private List<Long> permissionIds;
 }

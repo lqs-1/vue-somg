@@ -10,13 +10,13 @@ import java.util.Map;
 
 public interface RoleService extends IService<Role> {
 
-    PageUtils getUserPage(Map<String, Object> param);
+    PageUtils getRolePage(Map<String, Object> param);
 
     R addRole(Role role);
 
     void editRole(Role role);
 
-    void deleteUserById(Long id);
+    void deleteRoleById(Long id);
 
     List<Role> getList();
 

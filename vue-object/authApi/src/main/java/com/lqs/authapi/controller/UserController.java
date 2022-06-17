@@ -1,13 +1,12 @@
 package com.lqs.authapi.controller;
 
 import com.lqs.authapi.constant.REnum;
-import com.lqs.authapi.service.RoleService;
-import com.lqs.authapi.service.UserRoleService;
+import com.lqs.authapi.domain.Permission;
+import com.lqs.authapi.service.*;
 import com.lqs.authapi.vo.UserLoginVo;
 import com.lqs.authapi.constant.Constant;
 import com.lqs.authapi.domain.Role;
 import com.lqs.authapi.domain.User;
-import com.lqs.authapi.service.UserService;
 import com.lqs.authapi.vo.UserVo;
 import com.wf.captcha.SpecCaptcha;
 import com.wf.captcha.base.Captcha;
@@ -45,6 +44,12 @@ public class UserController {
 
     @Autowired
     private RoleService roleService;
+
+    @Autowired
+    private PermissionService permissionService;
+
+    @Autowired
+    private UserPermissionService userPermissionService;
 
 
     @GetMapping("captcha")
@@ -224,6 +229,19 @@ public class UserController {
             }
             userRoleService.addUserRoleRenation(user.getId(),roleIds);
 
+            List<Permission> permissionList = permissionService.selectCommonPermission(Constant.COMMON_PERMISSION);
+
+            List<Long> permissionIds = new ArrayList<>();
+
+            for (Permission permission : permissionList) {
+                permissionIds.add(permission.getId());
+            }
+
+            userPermissionService.addUserPermissionRelation(user.getId(), permissionIds);
+
+
+
+
             return result;
 
         }catch (Exception e){
@@ -251,6 +269,8 @@ public class UserController {
             Long userId = user.getId();
 
             userRoleService.addUserRoleRenation(userId, userVo.getRoleIds());
+
+            userPermissionService.addUserPermissionRelation(userId, userVo.getPermissionIds());
 
             return R.ok(REnum.EDIT_USER_SUCCESS.getStatusCode(),
                     REnum.EDIT_USER_SUCCESS.getStatusMsg());
@@ -324,12 +344,18 @@ public class UserController {
     public R userAlterPwd(@RequestBody User user){
 
         try {
+
             R result = userService.alterPwdByUserName(user);
+
             return result;
+
         }catch (Exception e){
+
             e.printStackTrace();
+
             return R.error(REnum.ALTER_PASSWORD_FAIL.getStatusCode(),
                     REnum.ALTER_PASSWORD_FAIL.getStatusMsg());
+
         }
 
     }
@@ -339,20 +365,63 @@ public class UserController {
 
     @GetMapping("roleList")
     public R roleList(@RequestParam Long id){
+
         try {
+
             List<Long> roleIdList = userRoleService.selectByUserId(id);
+
             List<Long> roleIds = new ArrayList<>();
+
             for (Long roleId : roleIdList) {
+
                 Role role = roleService.getById(roleId);
+
                 roleIds.add(role.getId());
+
             }
-            return R.ok(REnum.GET_ROLE_SUCCESS.getStatusCode(),
-                    REnum.GET_ROLE_SUCCESS.getStatusMsg())
+
+            return R.ok(REnum.GET_EXIST_ROLE_SUCCESS.getStatusCode(),
+
+                    REnum.GET_EXIST_ROLE_SUCCESS.getStatusMsg())
+
                     .put("roleIds", roleIds);
+
         }catch (Exception e){
+
             e.printStackTrace();
-            return R.error(REnum.GET_ROLE_FAIL.getStatusCode(),
-                    REnum.GET_ROLE_FAIL.getStatusMsg());
+
+            return R.error(REnum.GET_EXIST_ROLE_FAIL.getStatusCode(),
+                    REnum.GET_EXIST_ROLE_FAIL.getStatusMsg());
+        }
+    }
+
+
+    @GetMapping("permissionList")
+    public R permissionList(@RequestParam Long id){
+        try {
+            List<Long> permissionIdList = userPermissionService.selectByUserId(id);
+
+            List<Long> permissionIds = new ArrayList<>();
+
+            for (Long permissionId : permissionIdList) {
+
+                Permission permission = permissionService.getById(permissionId);
+
+                permissionIds.add(permission.getId());
+
+            }
+
+            return R.ok(REnum.GET_EXIST_PERMISSION_SUCCESS.getStatusCode(),
+                            REnum.GET_EXIST_PERMISSION_SUCCESS.getStatusMsg())
+                    .put("permissionIds", permissionIds);
+
+        }catch (Exception e){
+
+            e.printStackTrace();
+
+            return R.error(REnum.GET_EXIST_PERMISSION_FAIL.getStatusCode(),
+                    REnum.GET_EXIST_PERMISSION_FAIL.getStatusMsg());
+
         }
     }
 

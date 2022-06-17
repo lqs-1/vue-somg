@@ -1,0 +1,125 @@
+package com.lqs.authapi.controller;
+
+
+import com.lqs.authapi.constant.REnum;
+import com.lqs.authapi.domain.Permission;
+import com.lqs.authapi.service.PermissionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import utils.Pagination.PageUtils;
+import utils.R;
+
+import java.util.List;
+import java.util.Map;
+
+@RestController
+@RequestMapping("permission")
+public class PermissionController {
+
+    @Autowired
+    private PermissionService permissionService;
+
+    @GetMapping("permissionPage")
+    public R getPage(@RequestParam Map<String, Object> param){
+
+        try{
+
+            PageUtils permissionList = permissionService.getPermissionPage(param);
+
+            return R.ok(REnum.GET_PERMISSION_SUCCESS.getStatusCode(),
+                            REnum.GET_PERMISSION_SUCCESS.getStatusMsg())
+                    .put("permissionList", permissionList);
+
+        }catch (Exception e){
+
+            e.printStackTrace();
+
+            return R.error(REnum.GET_PERMISSION_FAIL.getStatusCode(),
+                    REnum.GET_PERMISSION_FAIL.getStatusMsg());
+        }
+    }
+
+
+    @GetMapping("permissionList")
+    public R getList(){
+
+        try{
+
+            List<Permission> permissionList = permissionService.getList();
+
+            return R.ok(REnum.GET_PERMISSION_SUCCESS.getStatusCode(),
+                            REnum.GET_PERMISSION_SUCCESS.getStatusMsg())
+                    .put("permissionList", permissionList);
+
+        }catch (Exception e){
+
+            e.printStackTrace();
+
+            return R.error(REnum.GET_PERMISSION_FAIL.getStatusCode(),
+                    REnum.GET_PERMISSION_FAIL.getStatusMsg());
+
+        }
+    }
+
+
+    @PostMapping("addPermission")
+    public R addPermission(@RequestBody Permission permission){
+        try{
+
+            R result = permissionService.addPermission(permission);
+
+            return result;
+
+        }catch (Exception e){
+
+            e.printStackTrace();
+
+            return R.error(REnum.PERMISSION_ADD_FAIL.getStatusCode(),
+                    REnum.PERMISSION_ADD_FAIL.getStatusMsg());
+        }
+    }
+
+
+    @PostMapping("editPermission")
+    public R editPermission(@RequestBody Permission permission){
+
+        try{
+
+            permissionService.editPermission(permission);
+
+            return R.ok(REnum.PERMISSION_EDIT_SUCCESS.getStatusCode(),
+                    REnum.PERMISSION_EDIT_SUCCESS.getStatusMsg());
+
+        }catch (Exception e){
+
+            e.printStackTrace();
+
+            return R.error(REnum.PERMISSION_EDIT_FAIL.getStatusCode(),
+                    REnum.PERMISSION_EDIT_FAIL.getStatusMsg());
+        }
+    }
+
+
+    @PreAuthorize("hasAuthority('delete')")
+    @PostMapping("deletePermission")
+    public R deletePermission(@RequestBody Permission permission){
+
+        try{
+
+            permissionService.deletePermissionById(permission.getId());
+
+            return R.ok(REnum.PERMISSION_DELETE_SUCCESS.getStatusCode(),
+                    REnum.PERMISSION_DELETE_SUCCESS.getStatusMsg());
+
+        }catch (Exception e){
+
+            e.printStackTrace();
+
+            return R.error(REnum.PERMISSION_DELETE_FAIL.getStatusCode(),
+                    REnum.PERMISSION_DELETE_FAIL.getStatusMsg());
+        }
+    }
+
+
+}
