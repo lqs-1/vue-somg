@@ -8,4 +8,5 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface RoleMapper extends BaseMapper<Role> {
     Role getRoleByRoleName(@Param("roleName") String roleName);
+
 }

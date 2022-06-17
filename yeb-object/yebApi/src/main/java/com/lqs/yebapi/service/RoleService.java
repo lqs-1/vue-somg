@@ -20,4 +20,5 @@ public interface RoleService extends IService<Role> {
 
     List<Role> getList();
 
+    List<Role> selectCommonRole(String commonRole);
 }

@@ -4,9 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.lqs.yebapi.constant.REnum;
 import com.lqs.yebapi.domain.MyUser;
 import com.lqs.yebapi.domain.User;
-import com.lqs.yebapi.service.UserService;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -15,7 +13,6 @@ import utils.R;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -44,7 +41,9 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         // response.sendRedirect(this.url);
 
         response.setContentType("application/json;charset=utf-8");
+
         response.setStatus(HttpServletResponse.SC_OK);
+
         PrintWriter writer = response.getWriter();
 
         String code = (String) request.getSession().getAttribute("code");
@@ -59,19 +58,20 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
                     .getPrincipal();
 
             User user = new User();
+
             BeanUtils.copyProperties(principal, user);
+
             request.getSession().setAttribute("user", user);
 
             writer.write(JSON.toJSONString(R
                     .ok(REnum.LOGIN_SUCCESS.getStatusCode(),
                     REnum.LOGIN_SUCCESS.getStatusMsg())));
+
         }else {
+
             writer.write(JSON.toJSONString(R.error(REnum.VALIDATE_CODE_ERROR.getStatusCode(),
                     REnum.VALIDATE_CODE_ERROR.getStatusMsg())));
         }
-
-
-
 
     }
 }

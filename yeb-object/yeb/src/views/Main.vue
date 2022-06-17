@@ -89,14 +89,20 @@ export default {
 
 
     userCommandHandler(command){
-      if (command == 'cleanSession'){
-        this.httpRequest.get("/user/cleanSession").then(response => {
+      if (command == 'cleanSession') {
+        this.httpRequest.get("/user/logout").then(response => {
           // console.log(this)
           this.user = null
           this.$store.commit('CLEAN_USER', null)
           this.$router.replace("/")
 
-        }).catch(error => {
+        })
+
+
+        this.httpRequest.get("/user/cleanSession").then(response => {
+          // console.log(this)
+
+
         })
       }
     },

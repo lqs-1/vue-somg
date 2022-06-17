@@ -125,29 +125,25 @@
 
         </el-tab-pane>
         <el-tab-pane label="角色管理" name="second">
-          <el-table
-              ref="multipleTable"
-              :data="roleList"
-              tooltip-effect="dark"
-              style="width: 100%"
-              @selection-change="handleSelectionChange">
-            <el-table-column
-                type="selection"
-                width="55">
-            </el-table-column>
-            <el-table-column
-                label="角色id"
-                width="120">
-              <template slot-scope="scope">{{ scope.row.id }}</template>
-            </el-table-column>
-            <el-table-column
-                prop="roleName"
-                label="角色名称"
-                width="120">
-            </el-table-column>
-          </el-table>
-          <div style="margin-top: 20px">
-            <el-button @click="toggleSelection()">取消选择</el-button>
+          <div class="checkScrol">
+            <table class="datatable">
+              <thead>
+              <tr>
+                <th>选择</th>
+                <th>角色id</th>
+                <th>角色名</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr v-for="c in roleList">
+                <td>
+                  <input :id="c.id" v-model="roleIds" type="checkbox" :value="c.id">
+                </td>
+                <td><label :for="c.id">{{c.id}}</label></td>
+                <td><label :for="c.id">{{c.roleName}}</label></td>
+              </tr>
+              </tbody>
+            </table>
           </div>
         </el-tab-pane>
       </el-tabs>
@@ -203,7 +199,7 @@ export default {
         currentPage: 1,
       },
       activeName: 'first',
-      multipleSelection: [],
+      roleIds: [],
       roleList: []
     }
   },
@@ -269,23 +265,46 @@ export default {
 
 
     handleEdit(index, data) {
-      console.log(data)
+      // console.log(data)
       this.userForm = data
       this.userEditVisible = true
+      this.httpRequest.get("role/roleList")
+          .then(response => {
+            // console.log(response)
+            this.roleList = response.data.roleList
+          })
+      // console.log(this.userForm)
+      this.httpRequest.get("user/roleList?id=" + this.userForm.id)
+          .then(response => {
+            // console.log(response)
+            this.roleIds = response.data.roleIds
+          })
 
     },
 
     editHandleClose() {
       this.userEditVisible = false
+      this.roleIds = []
+      this.roleList = []
     },
 
     editUser() {
       this.$refs.editForm.validate((valid) => {
         if (valid) {
           // console.log(this.userForm)
-          this.httpRequest.post("user/editUser", this.userForm).then(response => {
+
+          let params = {
+              "id": this.userForm.id,
+              "username": this.userForm.username,
+              "password": this.userForm.password,
+              "sex": this.userForm.sex,
+              "roleIds": this.roleIds
+          }
+
+          this.httpRequest.post("user/editUser", params).then(response => {
             this.changeCurrentPageHandler(1)
             this.userForm = {}
+            this.roleIds = []
             this.userEditVisible = false
           })
         } else {
@@ -302,32 +321,11 @@ export default {
     },
 
     handleClick(tab, event) {
-      if (tab.index == 1) {
-        this.httpRequest.get("role/roleList")
-            .then(response => {
-              console.log(response)
-              this.roleList = response.data.roleList
 
-            })
-      }
     },
 
-    handleSelectionChange(val) {
-      console.log(val)
-      this.multipleSelection = val;
-      console.log(this.multipleSelection)
-    },
 
-    toggleSelection(rows) {
-      console.log(rows)
-      if (rows) {
-        rows.forEach(row => {
-          this.$refs.multipleTable.toggleRowSelection(row);
-        });
-      } else {
-        this.$refs.multipleTable.clearSelection();
-      }
-    },
+
 
   }
 
@@ -349,6 +347,27 @@ export default {
 .queryButton {
   position: absolute;
   right: 400px;
+}
+.datatable {
+  position: relative;
+  box-sizing: border-box;
+  -webkit-box-flex: 1;
+  width: 100%;
+  max-width: 100%;
+  font-size: 14px;
+  color: rgb(96, 98, 102);
+  overflow: hidden;
+  flex: 1 1 0%;
+}
+.datatable td, .datatable th {
+  padding: 12px 0;
+  min-width: 0;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+  position: relative;
+  text-align: left;
 }
 
 

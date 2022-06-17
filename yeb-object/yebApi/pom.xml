@@ -12,7 +12,7 @@
     </parent>
 
     <groupId>com.lqs.yebApi</groupId>
-    <artifactId>yebApi</artifactId>
+    <artifactId>userApi</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>

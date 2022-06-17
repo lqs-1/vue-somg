@@ -16,9 +16,14 @@ public class LogoutSuccessHandler implements org.springframework.security.web.au
 
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+
         response.setContentType("application/json;charset=utf-8");
+
         response.setStatus(HttpServletResponse.SC_OK);
+
         PrintWriter writer = response.getWriter();
+
         writer.write(JSON.toJSONString(R.ok(REnum.LOGOUT_SUCCESS.getStatusCode(), REnum.LOGOUT_SUCCESS.getStatusMsg())));
+
     }
 }

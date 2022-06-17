@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class UserLoginVo extends User {
+public class UserVo extends User {
 
-    private String code;
+    private List<Long> roleIds;
 }

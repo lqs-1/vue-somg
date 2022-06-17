@@ -17,9 +17,14 @@ public class MyAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+
         response.setContentType("application/json;charset=utf-8");
+
         response.setStatus(HttpServletResponse.SC_OK);
+
         PrintWriter writer = response.getWriter();
+
         writer.write(JSON.toJSONString(R.error(REnum.USER_PERMISSIONS_ERROR.getStatusCode(), REnum.USER_PERMISSIONS_ERROR.getStatusMsg())));
+
     }
 }

@@ -1,9 +1,14 @@
 package com.lqs.yebapi.controller;
 
+import com.lqs.yebapi.constant.Constant;
 import com.lqs.yebapi.constant.REnum;
+import com.lqs.yebapi.domain.Role;
 import com.lqs.yebapi.domain.User;
+import com.lqs.yebapi.service.RoleService;
+import com.lqs.yebapi.service.UserRoleService;
 import com.lqs.yebapi.service.UserService;
 import com.lqs.yebapi.vo.UserLoginVo;
+import com.lqs.yebapi.vo.UserVo;
 import com.wf.captcha.SpecCaptcha;
 import com.wf.captcha.base.Captcha;
 import org.springframework.beans.BeanUtils;
@@ -18,6 +23,7 @@ import utils.R;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +36,12 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserRoleService userRoleService;
+
+    @Autowired
+    private RoleService roleService;
 
 
     @GetMapping("captcha")
@@ -77,30 +89,43 @@ public class UserController {
         String code = (String) request.getSession().getAttribute("code");
 
         if (code.toLowerCase().equals(userLoginVo.getCode().toLowerCase())){
+
             try{
+
                     User user = new User();
+
                     BeanUtils.copyProperties(userLoginVo,user);
+
                     R result = userService.getUser(user, request);
+
                     return result;
 
             }catch (Exception e){
+
                 e.printStackTrace();
+
                 return R.error(REnum.DATABASE_ERROR.getStatusCode(),
                         REnum.DATABASE_ERROR.getStatusMsg());
+
             }
         }else {
+
             return R.error(REnum.VALIDATE_CODE_ERROR.getStatusCode(),
                     REnum.VALIDATE_CODE_ERROR.getStatusMsg());
+
         }
     }
 
     @GetMapping("session")
     public R session(HttpServletRequest request){
+
         User user = (User) request.getSession().getAttribute("user");
 
         if (user == null){
+
             return R.error(REnum.PLEASE_LOGIN.getStatusCode(),
                     REnum.PLEASE_LOGIN.getStatusMsg());
+
         }
 
         return R.ok(REnum.WELCOME_MAIN.getStatusCode(),
@@ -111,30 +136,40 @@ public class UserController {
 
     @GetMapping("cleanSession")
     public R cleanSession(HttpServletRequest httpServletRequest){
+
         httpServletRequest.getSession().removeAttribute("user");
+
         return R.ok(REnum.LOGOUT_SUCCESS.getStatusCode(),
                 REnum.LOGOUT_SUCCESS.getStatusMsg());
     }
 
 
-    @PreAuthorize("hasAnyRole('admin', 'teacher')")
+    /**
+     * 废方法。改用getUserPage了
+     * @return
+     */
+    @PreAuthorize("hasAnyRole('common')")
     @GetMapping("userList")
     public R getUserList(){
+
         try{
             List<User> userList = userService.getUserList();
+
             return R.ok(REnum.GET_USER_LIST_SUCCESS.getStatusCode(),
                     REnum.GET_USER_LIST_SUCCESS.getStatusMsg())
                     .put("userList", userList);
 
         }catch (Exception e){
+
             e.printStackTrace();
+
             return R.error(REnum.GET_USER_LIST_FAIL.getStatusCode(),
                     REnum.GET_USER_LIST_FAIL.getStatusMsg());
         }
     }
 
 
-    @PreAuthorize("hasAnyRole('admin')")
+    @PreAuthorize("hasAnyRole('common')")
     @GetMapping("userPage")
     public R getUserPage(@RequestParam Map<String, Object> params){
         try{
@@ -142,58 +177,99 @@ public class UserController {
             // Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             // System.out.println(authentication.getPrincipal());
             PageUtils userList = userService.getUserPage(params);
+
             return R.ok(REnum.GET_USER_LIST_SUCCESS.getStatusCode(),
                             REnum.GET_USER_LIST_SUCCESS.getStatusMsg())
                     .put("userList", userList);
 
         }catch (Exception e){
+
             e.printStackTrace();
+
             return R.error(REnum.GET_USER_LIST_FAIL.getStatusCode(),
                     REnum.GET_USER_LIST_FAIL.getStatusMsg());
         }
     }
 
 
-    @PreAuthorize("hasAnyRole('admin')")
+    @PreAuthorize("hasAnyRole('supermanager')")
     @PostMapping("addUser")
     public R addUser(@RequestBody User user){
+
         try{
+
             R result = userService.addUser(user);
+
+            List<Role> roleList = roleService.selectCommonRole(Constant.COMMON_ROLE);
+
+            List<Long> roleIds = new ArrayList<>();
+
+            for (Role role : roleList) {
+
+                roleIds.add(role.getId());
+
+            }
+            userRoleService.addUserRoleRenation(user.getId(),roleIds);
+
             return result;
 
         }catch (Exception e){
+
             e.printStackTrace();
+
             return R.error(REnum.ADD_USER_FAIL.getStatusCode(),
                     REnum.ADD_USER_FAIL.getStatusMsg());
+
         }
     }
 
-    @PreAuthorize("hasAnyRole('admin')")
+    @PreAuthorize("hasAnyRole('supermanager')")
     @PostMapping("editUser")
-    public R editUser(@RequestBody User user){
+    public R editUser(@RequestBody UserVo userVo){
+
         try{
+
+            User user = new User();
+
+            BeanUtils.copyProperties(userVo, user);
+
             userService.editUser(user);
+
+            Long userId = user.getId();
+
+            userRoleService.addUserRoleRenation(userId, userVo.getRoleIds());
+
             return R.ok(REnum.EDIT_USER_SUCCESS.getStatusCode(),
                     REnum.EDIT_USER_SUCCESS.getStatusMsg());
 
         }catch (Exception e){
+
             e.printStackTrace();
+
             return R.error(REnum.EDIT_USER_FAIL.getStatusCode(),
                     REnum.EDIT_USER_FAIL.getStatusMsg());
         }
     }
 
 
-    @PreAuthorize("hasAnyRole('admin')")
+    @PreAuthorize("hasAnyRole('supermanager')")
+
     @PostMapping("deleteUser")
     public R deleteUser(@RequestBody User user){
+
         try{
+
             userService.deleteUserById(user.getId());
+
+            userRoleService.deleteUserRoleRelation(user.getId());
+
             return R.ok(REnum.DELETE_USER_SUCCESS.getStatusCode(),
                     REnum.DELETE_USER_SUCCESS.getStatusMsg());
 
         }catch (Exception e){
+
             e.printStackTrace();
+
             return R.error(REnum.DELETE_USER_FAIL.getStatusCode(),
                     REnum.DELETE_USER_FAIL.getStatusMsg());
         }
@@ -204,12 +280,29 @@ public class UserController {
 
     @PostMapping("register")
     public R userRegister(@RequestBody User user){
+
         try{
+
             R result = userService.addUser(user);
+
+            List<Role> roleList = roleService.selectCommonRole(Constant.COMMON_ROLE);
+
+            List<Long> roleIds = new ArrayList<>();
+
+            for (Role role : roleList) {
+
+                roleIds.add(role.getId());
+
+            }
+            userRoleService.addUserRoleRenation(user.getId(),roleIds);
+
             return result;
         }catch (Exception e){
+
             e.printStackTrace();
-            return R.error(REnum.REGISTER_FAIL.getStatusCode(), REnum.REGISTER_FAIL.getStatusMsg());
+
+            return R.error(REnum.REGISTER_FAIL.getStatusCode(),
+                    REnum.REGISTER_FAIL.getStatusMsg());
         }
     }
 
@@ -222,14 +315,32 @@ public class UserController {
             return result;
         }catch (Exception e){
             e.printStackTrace();
-            return R.error(REnum.ALTER_PASSWORD_FAIL.getStatusCode(), REnum.ALTER_PASSWORD_FAIL.getStatusMsg());
+            return R.error(REnum.ALTER_PASSWORD_FAIL.getStatusCode(),
+                    REnum.ALTER_PASSWORD_FAIL.getStatusMsg());
         }
 
     }
 
 
+    @PreAuthorize("hasAnyRole('supermanager')")
 
-
-
+    @GetMapping("roleList")
+    public R roleList(@RequestParam Long id){
+        try {
+            List<Long> roleIdList = userRoleService.selectByUserId(id);
+            List<Long> roleIds = new ArrayList<>();
+            for (Long roleId : roleIdList) {
+                Role role = roleService.getById(roleId);
+                roleIds.add(role.getId());
+            }
+            return R.ok(REnum.GET_ROLE_SUCCESS.getStatusCode(),
+                    REnum.GET_ROLE_SUCCESS.getStatusMsg())
+                    .put("roleIds", roleIds);
+        }catch (Exception e){
+            e.printStackTrace();
+            return R.error(REnum.GET_ROLE_FAIL.getStatusCode(),
+                    REnum.GET_ROLE_FAIL.getStatusMsg());
+        }
+    }
 
 }

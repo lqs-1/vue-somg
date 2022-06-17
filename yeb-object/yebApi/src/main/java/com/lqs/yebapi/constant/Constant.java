@@ -6,4 +6,11 @@ public class Constant {
     public static final String LIMIT = "limit";
     public static final String ORDERFILED = "orderFiled";
     public static final String ORDERTYPE = "orderType";
+
+
+
+
+
+    // 默认添加的角色
+    public static final String COMMON_ROLE = "common";
 }

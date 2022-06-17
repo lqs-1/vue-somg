@@ -10,7 +10,6 @@ public interface UserMapper extends BaseMapper<User> {
 
     User selectByUserName(@Param("username") String username);
 
-
     User getUserByUserName(@Param("username") String username);
 
     int alterPwdByUserName(User user);

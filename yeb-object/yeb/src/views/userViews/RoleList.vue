@@ -147,7 +147,7 @@ export default {
           "&orderFiled=id" +
           "&orderType=1")
           .then(response => {
-            console.log(response)
+            // console.log(response)
             this.pagination.currentPage = response.data.roleList.currentPage
             this.pagination.pageSize = response.data.roleList.pageSize
             this.pagination.total = response.data.roleList.totalSize
@@ -187,7 +187,7 @@ export default {
 
 
     handleEdit(index, data) {
-      console.log(data)
+      // console.log(data)
       this.roleForm = data
       this.roleEditVisible = true
 

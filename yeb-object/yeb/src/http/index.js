@@ -31,9 +31,11 @@ instance.interceptors.response.use(function (response) {
         if (response.data.code == 0 || (response.data.code > 10000 && response.data.code < 20000)){
             Message.success(response.data.msg)
             return response;
-        }else(
+        }else if(response.data.code > 20000){
             Message.error(response.data.msg)
-        )
+        }else{
+            Message.error("请登录")
+        }
         return ;
 
     }else{
