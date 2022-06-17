@@ -23,7 +23,8 @@ public class LogoutSuccessHandler implements org.springframework.security.web.au
 
         PrintWriter writer = response.getWriter();
 
-        writer.write(JSON.toJSONString(R.ok(REnum.LOGOUT_SUCCESS.getStatusCode(), REnum.LOGOUT_SUCCESS.getStatusMsg())));
+        writer.write(JSON.toJSONString(R.ok(REnum.LOGOUT_SUCCESS.getStatusCode(),
+                REnum.LOGOUT_SUCCESS.getStatusMsg())));
 
         writer.flush();
     }

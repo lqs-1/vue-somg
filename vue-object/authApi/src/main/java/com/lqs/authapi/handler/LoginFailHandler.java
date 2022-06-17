@@ -23,7 +23,8 @@ public class LoginFailHandler implements AuthenticationFailureHandler {
 
         PrintWriter writer = response.getWriter();
 
-        writer.write(JSON.toJSONString(R.ok(REnum.LOGIN_FAIL.getStatusCode(), REnum.LOGIN_FAIL.getStatusMsg())));
+        writer.write(JSON.toJSONString(R.ok(REnum.LOGIN_FAIL.getStatusCode(),
+                REnum.LOGIN_FAIL.getStatusMsg())));
 
         writer.flush();
 
