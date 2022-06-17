@@ -26,5 +26,6 @@ public class MyAccessDeniedHandler implements AccessDeniedHandler {
 
         writer.write(JSON.toJSONString(R.error(REnum.USER_PERMISSIONS_ERROR.getStatusCode(), REnum.USER_PERMISSIONS_ERROR.getStatusMsg())));
 
+        writer.flush();
     }
 }

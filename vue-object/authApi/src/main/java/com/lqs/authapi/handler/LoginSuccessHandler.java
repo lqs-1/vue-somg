@@ -73,5 +73,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
                     REnum.VALIDATE_CODE_ERROR.getStatusMsg())));
         }
 
+        writer.flush();
+
     }
 }

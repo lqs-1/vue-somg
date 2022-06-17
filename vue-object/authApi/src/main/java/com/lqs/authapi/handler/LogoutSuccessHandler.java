@@ -25,5 +25,6 @@ public class LogoutSuccessHandler implements org.springframework.security.web.au
 
         writer.write(JSON.toJSONString(R.ok(REnum.LOGOUT_SUCCESS.getStatusCode(), REnum.LOGOUT_SUCCESS.getStatusMsg())));
 
+        writer.flush();
     }
 }

@@ -25,5 +25,7 @@ public class LoginFailHandler implements AuthenticationFailureHandler {
 
         writer.write(JSON.toJSONString(R.ok(REnum.LOGIN_FAIL.getStatusCode(), REnum.LOGIN_FAIL.getStatusMsg())));
 
+        writer.flush();
+
     }
 }
