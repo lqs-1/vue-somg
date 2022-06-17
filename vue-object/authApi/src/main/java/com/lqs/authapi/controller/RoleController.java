@@ -1,0 +1,134 @@
+package com.lqs.authapi.controller;
+
+import com.lqs.authapi.service.RoleService;
+import com.lqs.authapi.constant.REnum;
+import com.lqs.authapi.domain.Role;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import utils.Pagination.PageUtils;
+import utils.R;
+
+import java.util.List;
+import java.util.Map;
+
+@RestController
+@RequestMapping("role")
+public class RoleController {
+
+    @Autowired
+    private RoleService roleService;
+
+
+    @PreAuthorize("hasAnyRole('common')")
+    @GetMapping("rolePage")
+    public R getPage(@RequestParam Map<String, Object> param){
+
+        try{
+
+            PageUtils roleList = roleService.getUserPage(param);
+
+            return R.ok(REnum.GET_ROLE_SUCCESS.getStatusCode(),
+                            REnum.GET_ROLE_SUCCESS.getStatusMsg())
+                    .put("roleList", roleList);
+
+        }catch (Exception e){
+
+            e.printStackTrace();
+
+            return R.error(REnum.GET_ROLE_FAIL.getStatusCode(),
+                    REnum.GET_ROLE_FAIL.getStatusMsg());
+        }
+    }
+
+    @PreAuthorize("hasAnyRole('supermanager')")
+
+    @GetMapping("roleList")
+    public R getList(){
+
+        try{
+
+            List<Role> roleList = roleService.getList();
+
+            return R.ok(REnum.GET_ROLE_SUCCESS.getStatusCode(),
+                            REnum.GET_ROLE_SUCCESS.getStatusMsg())
+                    .put("roleList", roleList);
+
+        }catch (Exception e){
+
+            e.printStackTrace();
+
+            return R.error(REnum.GET_ROLE_FAIL.getStatusCode(),
+                    REnum.GET_ROLE_FAIL.getStatusMsg());
+
+        }
+    }
+
+
+    @PreAuthorize("hasAnyRole('supermanager')")
+
+    @PostMapping("addRole")
+    public R addRole(@RequestBody Role role){
+
+        try{
+
+            R result = roleService.addRole(role);
+
+            return result;
+
+        }catch (Exception e){
+
+            e.printStackTrace();
+
+            return R.error(REnum.ROLE_ADD_FAIL.getStatusCode(),
+                    REnum.ROLE_ADD_FAIL.getStatusMsg());
+        }
+    }
+
+
+    @PreAuthorize("hasAnyRole('supermanager')")
+
+    @PostMapping("editRole")
+    public R editRole(@RequestBody Role role){
+
+        try{
+
+            roleService.editRole(role);
+
+            return R.ok(REnum.ROLE_EDIT_SUCCESS.getStatusCode(),
+                    REnum.ROLE_EDIT_SUCCESS.getStatusMsg());
+
+        }catch (Exception e){
+
+            e.printStackTrace();
+
+            return R.error(REnum.ROLE_EDIT_FAIL.getStatusCode(),
+                    REnum.ROLE_EDIT_FAIL.getStatusMsg());
+        }
+    }
+
+
+
+    @PreAuthorize("hasAnyRole('supermanager')")
+
+    @PostMapping("deleteRole")
+    public R deleteRole(@RequestBody Role role){
+
+        try{
+
+            roleService.deleteUserById(role.getId());
+
+            return R.ok(REnum.ROLE_DELETE_SUCCESS.getStatusCode(),
+                    REnum.ROLE_DELETE_SUCCESS.getStatusMsg());
+
+        }catch (Exception e){
+
+            e.printStackTrace();
+
+            return R.error(REnum.ROLE_DELETE_FAIL.getStatusCode(),
+                    REnum.ROLE_DELETE_FAIL.getStatusMsg());
+        }
+    }
+
+
+}
