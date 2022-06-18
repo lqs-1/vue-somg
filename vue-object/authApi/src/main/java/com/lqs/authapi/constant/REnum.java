@@ -14,6 +14,10 @@ public enum REnum {
     SUCCESS(0, "success"),
     // 用于不覆写，通用
     FAIL(1, "fail"),
+
+    /**
+     * 下面的都是个人复写的
+     */
     WELCOME_MAIN(11000, "欢迎来到主页"),
     PLEASE_LOGIN(21000, "请先登录"),
     DATABASE_ERROR(21001, "数据库链接错误"),
