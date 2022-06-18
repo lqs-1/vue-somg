@@ -30,7 +30,7 @@ import java.util.Map;
 public class UserController {
 
     /**
-     * 不会用
+     * 不用
      */
     // @Autowired
     // private JedisPool jedisPool;

@@ -16,7 +16,6 @@ public class UserPermissionServiceImpl extends ServiceImpl<UserPermissionMapper,
 
         List<Long> permissionIdList = this.baseMapper.selectByUserId(id);
 
-
         return permissionIdList;
     }
 
