@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import redis.clients.jedis.JedisPool;
 import utils.Pagination.PageUtils;
 import utils.R;
 
@@ -187,7 +186,7 @@ public class UserController {
     }
 
 
-    @PreAuthorize("hasAnyRole('common')")
+    @PreAuthorize("hasAnyRole('common','admin', 'supermanager') and hasAuthority('select')")
     @GetMapping("userPage")
     public R getUserPage(@RequestParam Map<String, Object> params){
         try{
@@ -210,7 +209,7 @@ public class UserController {
     }
 
 
-    @PreAuthorize("hasAnyRole('supermanager')")
+    @PreAuthorize("hasAnyRole('admin', 'supermanager') and hasAuthority('add')")
     @PostMapping("addUser")
     public R addUser(@RequestBody User user){
 
@@ -254,7 +253,7 @@ public class UserController {
         }
     }
 
-    @PreAuthorize("hasAnyRole('supermanager')")
+    @PreAuthorize("hasAnyRole('admin', 'supermanager') and hasAuthority('update')")
     @PostMapping("editUser")
     public R editUser(@RequestBody UserVo userVo){
 
@@ -285,8 +284,7 @@ public class UserController {
     }
 
 
-    @PreAuthorize("hasAnyRole('supermanager')")
-
+    @PreAuthorize("hasAnyRole('admin', 'supermanager') and hasAuthority('delete')")
     @PostMapping("deleteUser")
     public R deleteUser(@RequestBody User user){
 
@@ -295,6 +293,8 @@ public class UserController {
             userService.deleteUserById(user.getId());
 
             userRoleService.deleteUserRoleRelation(user.getId());
+
+            userPermissionService.deleteUserPermissionRelation(user.getId());
 
             return R.ok(REnum.DELETE_USER_SUCCESS.getStatusCode(),
                     REnum.DELETE_USER_SUCCESS.getStatusMsg());
@@ -329,6 +329,16 @@ public class UserController {
             }
             userRoleService.addUserRoleRenation(user.getId(),roleIds);
 
+            List<Permission> permissionList = permissionService.selectCommonPermission(Constant.COMMON_PERMISSION);
+
+            List<Long> permissionIds = new ArrayList<>();
+
+            for (Permission permission : permissionList) {
+                permissionIds.add(permission.getId());
+            }
+
+            userPermissionService.addUserPermissionRelation(user.getId(), permissionIds);
+
             return result;
         }catch (Exception e){
 
@@ -361,8 +371,7 @@ public class UserController {
     }
 
 
-    @PreAuthorize("hasAnyRole('supermanager')")
-
+    @PreAuthorize("hasAnyRole('admin', 'supermanager') and hasAuthority('select')")
     @GetMapping("roleList")
     public R roleList(@RequestParam Long id){
 
@@ -396,6 +405,7 @@ public class UserController {
     }
 
 
+    @PreAuthorize("hasAnyRole('admin', 'supermanager') and hasAuthority('select')")
     @GetMapping("permissionList")
     public R permissionList(@RequestParam Long id){
         try {

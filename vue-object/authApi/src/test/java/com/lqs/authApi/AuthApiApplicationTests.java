@@ -1,10 +1,10 @@
-package com.lqs.yebapi;
+package com.lqs.authApi;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class YebApiApplicationTests {
+class AuthApiApplicationTests {
 
     @Test
     void contextLoads() {

@@ -42,4 +42,14 @@ public class UserPermissionServiceImpl extends ServiceImpl<UserPermissionMapper,
         }
 
     }
+
+    @Override
+    public void deleteUserPermissionRelation(Long id) {
+        if (id != null){
+
+            this.baseMapper.delete(new LambdaQueryWrapper<UserPermission>()
+                    .eq(UserPermission::getUserId, id));
+
+        }
+    }
 }

@@ -20,6 +20,7 @@ public class PermissionController {
     @Autowired
     private PermissionService permissionService;
 
+    @PreAuthorize("hasAnyRole('common','admin', 'supermanager') and hasAuthority('select')")
     @GetMapping("permissionPage")
     public R getPage(@RequestParam Map<String, Object> param){
 
@@ -41,6 +42,7 @@ public class PermissionController {
     }
 
 
+    @PreAuthorize("hasAnyRole('admin', 'supermanager') and hasAuthority('select')")
     @GetMapping("permissionList")
     public R getList(){
 
@@ -63,6 +65,7 @@ public class PermissionController {
     }
 
 
+    @PreAuthorize("hasAnyRole('admin', 'supermanager') and hasAuthority('add')")
     @PostMapping("addPermission")
     public R addPermission(@RequestBody Permission permission){
         try{
@@ -81,6 +84,7 @@ public class PermissionController {
     }
 
 
+    @PreAuthorize("hasAnyRole('admin', 'supermanager') and hasAuthority('update')")
     @PostMapping("editPermission")
     public R editPermission(@RequestBody Permission permission){
 
@@ -101,7 +105,7 @@ public class PermissionController {
     }
 
 
-    @PreAuthorize("hasAuthority('delete')")
+    @PreAuthorize("hasAnyRole('admin', 'supermanager') and hasAuthority('delete')")
     @PostMapping("deletePermission")
     public R deletePermission(@RequestBody Permission permission){
 

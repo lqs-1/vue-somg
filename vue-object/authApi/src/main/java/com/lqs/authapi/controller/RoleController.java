@@ -20,7 +20,7 @@ public class RoleController {
     private RoleService roleService;
 
 
-    @PreAuthorize("hasAnyRole('common')")
+    @PreAuthorize("hasAnyRole('common','admin', 'supermanager') and hasAuthority('select')")
     @GetMapping("rolePage")
     public R getPage(@RequestParam Map<String, Object> param){
 
@@ -41,8 +41,7 @@ public class RoleController {
         }
     }
 
-    @PreAuthorize("hasAnyRole('supermanager')")
-
+    @PreAuthorize("hasAnyRole('admin', 'supermanager') and hasAuthority('select')")
     @GetMapping("roleList")
     public R getList(){
 
@@ -65,8 +64,7 @@ public class RoleController {
     }
 
 
-    @PreAuthorize("hasAnyRole('supermanager')")
-
+    @PreAuthorize("hasAnyRole('admin', 'supermanager') and hasAuthority('add')")
     @PostMapping("addRole")
     public R addRole(@RequestBody Role role){
 
@@ -86,7 +84,7 @@ public class RoleController {
     }
 
 
-    @PreAuthorize("hasAnyRole('supermanager')")
+    @PreAuthorize("hasAnyRole('admin', 'supermanager') and hasAuthority('update')")
 
     @PostMapping("editRole")
     public R editRole(@RequestBody Role role){
@@ -109,8 +107,7 @@ public class RoleController {
 
 
 
-    @PreAuthorize("hasAnyRole('supermanager')")
-
+    @PreAuthorize("hasAnyRole('admin', 'supermanager') and hasAuthority('delete')")
     @PostMapping("deleteRole")
     public R deleteRole(@RequestBody Role role){
 
