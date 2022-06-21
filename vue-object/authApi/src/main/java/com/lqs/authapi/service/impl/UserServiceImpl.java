@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService, UserDetailsService {
+    public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService, UserDetailsService {
 
     @Autowired
     private UserRoleService userRoleService;
